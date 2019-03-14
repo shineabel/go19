@@ -5,10 +5,10 @@ import "log"
 
 var matchers = make(map[string]Matcher)
 
-func Run(searchTerm string)  {
+func Run(searchTerm string) {
 
-	feeds,err := RetrieveFeeds()
-	if(err != nil){
+	feeds, err := RetrieveFeeds()
+	if err != nil {
 		log.Fatal(err)
 	}
 
@@ -17,16 +17,16 @@ func Run(searchTerm string)  {
 
 	wg.Add(len(feeds))
 
-	for _,f := range feeds {
+	for _, f := range feeds {
 
 		matcher, exist := matchers[f.Type]
-		if(!exist){
+		if !exist {
 			matcher = matchers["default"]
 		}
 		go func(matcher Matcher, feed *Feed) {
-			Match(matcher,feed,searchTerm,results)
+			Match(matcher, feed, searchTerm, results)
 			wg.Done()
-		}(matcher,f)
+		}(matcher, f)
 
 	}
 	go func() {
@@ -38,13 +38,12 @@ func Run(searchTerm string)  {
 
 }
 
-func Register(feedType string, matcher Matcher)  {
+func Register(feedType string, matcher Matcher) {
 
-	if _, exist :=	matchers[feedType]; exist {
-		log.Fatal(feedType ," matcher exist")
+	if _, exist := matchers[feedType]; exist {
+		log.Fatal(feedType, " matcher exist")
 	}
-	log.Println("register matcher", matcher, "for feed type:",feedType)
+	log.Println("register matcher", matcher, "for feed type:", feedType)
 	matchers[feedType] = matcher
 
 }
-
