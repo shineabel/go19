@@ -7,16 +7,34 @@ type user struct {
 	Email string
 }
 
-func (u user )Notify()  {
+type admin struct {
+	u user
+	level string
+}
+
+
+type notifier interface {
+	notify()
+}
+
+func (u *user )notify()  {
 	fmt.Printf("send user email to:%s<%s>",u.Name,u.Email)
+}
+
+func sendNotification(u notifier)  {
+	u.notify()
 }
 func main() {
 
-	bill := user{"Bill","Bill@gmail.com"}
-	bill.Notify()
+	ad := admin{
+		u:user{
+			Name:"test",
+			Email:"shine@gmail.com",
+		},
+		level:"super",
+	}
 
-	lily := &user{"Lily","Lily@gmail.com"}
-	lily.Notify()
+	ad.u.notify()
+	sendNotification(&ad.u)
 
-	(*lily).Notify()
 }
