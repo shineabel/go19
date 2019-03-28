@@ -44,7 +44,3 @@ func (p *Pool) Shudown()  {
 	p.wg7.Wait()
 
 }
-
-func main() {
-
-}
