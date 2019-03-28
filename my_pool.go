@@ -50,8 +50,8 @@ func main() {
 	}
 
 	for q := 0; q < nRoutine; q++ {
-		go func(query int) {
-			perfomQuery(query,p)
+		go func(q int) {
+			performQuery(q,p)
 			wg6.Done()
 		}(q)
 	}
@@ -61,7 +61,7 @@ func main() {
 
 }
 
-func perfomQuery(q int , p *pool.Pool)  {
+func performQuery(q int , p *pool.Pool)  {
 
 	conn, err := p.Acquire()
 	if err != nil {
@@ -72,6 +72,6 @@ func perfomQuery(q int , p *pool.Pool)  {
 	defer p.Release(conn)
 
 	time.Sleep(time.Duration(rand.Int31n(100)) * time.Millisecond)
-	log.Printf("qid %d cid %d",q, conn.(*dbConnection).id)
+	log.Printf("qid %d use  cid %d end ...",q, conn.(*dbConnection).id)
 }
 
