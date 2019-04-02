@@ -21,10 +21,42 @@ func main() {
 }
 
 func CreateUser(c *gin.Context)  {
+	id := c.Request.FormValue("id")
+	name := c.Request.FormValue("name")
+
+
+	db, err := sql.Open("mysql","root:shine@/test?charset=utf8")
+	checkError(err)
+
+	defer db.Close()
+
+	rs, err := db.Exec("insert into user_info(id,name) values(?,?)",id,name)
+	insertId, err := rs.LastInsertId()
+
+	c.JSON(http.StatusOK,gin.H{
+		"insertId":insertId,
+	})
 	
 }
 
 func GetAll(c *gin.Context)  {
+	db, err := sql.Open("mysql","root:shine@/test?charset=utf8")
+	checkError(err)
+	defer db.Close()
+	rows , err := db.Query("select id,name from user_info")
+
+	persons := make([]pojo.Person,0)
+	for rows.Next() {
+		var p pojo.Person
+		rows.Scan(&p.Id, &p.Name)
+		persons = append(persons,p)
+	}
+	if err = rows.Err(); err != nil {
+		fmt.Printf("error:",err)
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"persons":persons,
+	})
 	
 }
 
