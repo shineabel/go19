@@ -25,6 +25,38 @@ func main() {
 
 	r2 := r.Group("/v2")
 	r2.GET("/test2",redirect)
+
+
+	//r2.Use(middleware())
+	//
+	//{
+	//
+	//	r2.GET("/test3", func(c *gin.Context) {
+	//		tag := c.MustGet("tag")
+	//		chainId := c.MustGet("chainId")
+	//		c.JSON(http.StatusOK, gin.H{
+	//			"tag":     tag,
+	//			"chainId": chainId,
+	//		})
+	//	})
+	//}
+	r2.GET("/auth", func(c *gin.Context) {
+		cookie := &http.Cookie{
+			Name:"session_id",
+			Value:"123",
+			Path:"/",
+			HttpOnly:true,
+		}
+		http.SetCookie(c.Writer,cookie)
+		c.JSON(http.StatusOK,"LoginSuccessful")
+
+	})
+
+	r2.GET("/home",AuthMiddleware(), func(c *gin.Context) {
+		c.JSON(http.StatusOK,gin.H{
+			"ok":"OK",
+		})
+	})
 	r.Run()
 }
 
@@ -155,6 +187,33 @@ func upload(c *gin.Context)  {
 func redirect(c *gin.Context)  {
 
 	c.Redirect(http.StatusTemporaryRedirect,"http://www.baidu.com")
+}
+
+func AuthMiddleware()  gin.HandlerFunc {
+
+	return func(c *gin.Context) {
+		//fmt.Println("-------before-----")
+		//		//c.Set("tag","shine")
+		//		//c.Set("chainId","rainbow-dev")
+		//		//c.Next()
+		//		//fmt.Println("------after -------")
+
+		if cookie, err := c.Request.Cookie("session_id"); err == nil {
+			v := cookie.Value
+			if v == "123" {
+				c.Next()
+				return
+			}
+		}
+
+
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error":"Unauthorized",
+		})
+		c.Abort()
+		return
+
+	}
 }
 
 func checkError(err error)  {
