@@ -22,6 +22,9 @@ func main() {
 	v1.DELETE("/:id",DeleteOne)
 
 	v1.POST("/upload",upload)
+
+	r2 := r.Group("/v2")
+	r2.GET("/test2",redirect)
 	r.Run()
 }
 
@@ -90,7 +93,7 @@ func GetOne(c *gin.Context)  {
 			"count":0,
 		}
 	}
-	c.JSON(http.StatusOK,result)
+	c.XML(http.StatusOK,result)
 
 	
 }
@@ -147,6 +150,11 @@ func upload(c *gin.Context)  {
 	_, err2 := io.Copy(out,file)
 	checkError(err2)
 	c.String(http.StatusOK,"upload successful")
+}
+
+func redirect(c *gin.Context)  {
+
+	c.Redirect(http.StatusTemporaryRedirect,"http://www.baidu.com")
 }
 
 func checkError(err error)  {
