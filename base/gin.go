@@ -91,7 +91,19 @@ func GetOne(c *gin.Context)  {
 }
 
 func UpdateOne(c *gin.Context)  {
-	
+	id := c.Request.FormValue("id")
+	name := c.Request.FormValue("name")
+
+	db, err:= sql.Open("mysql","root:shine@/test?charset=utf8")
+	checkError(err)
+	defer db.Close()
+
+	rs, err := db.Exec("update user_info set name = ? where id = ?",name, id)
+
+	count, err := rs.RowsAffected()
+	c.JSON(http.StatusOK,gin.H{
+		"count":count,
+	})
 }
 
 func DeleteOne(c *gin.Context)  {
