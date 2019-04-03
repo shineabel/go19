@@ -7,6 +7,9 @@ import (
 	"github.com/go19/pojo"
 	_ "github.com/go-sql-driver/mysql"
 	"fmt"
+	"os"
+	"io"
+	"log"
 )
 
 func main() {
@@ -17,6 +20,8 @@ func main() {
 	v1.GET("/:id",GetOne)
 	v1.PUT("/",UpdateOne)
 	v1.DELETE("/:id",DeleteOne)
+
+	v1.POST("/upload",upload)
 	r.Run()
 }
 
@@ -127,6 +132,21 @@ func DeleteOne(c *gin.Context)  {
 		})
 	}
 	
+}
+
+func upload(c *gin.Context)  {
+
+	file, header, err :=c.Request.FormFile("upload")
+	if err != nil {
+		log.Fatal("upload error:",err)
+		c.String(http.StatusBadRequest,"BadRequest")
+		return
+	}
+	out, err := os.Create(header.Filename)
+	defer out.Close()
+	_, err2 := io.Copy(out,file)
+	checkError(err2)
+	c.String(http.StatusOK,"upload successful")
 }
 
 func checkError(err error)  {
