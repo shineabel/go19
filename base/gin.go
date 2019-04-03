@@ -10,6 +10,7 @@ import (
 	"os"
 	"io"
 	"log"
+	"time"
 )
 
 func main() {
@@ -50,6 +51,21 @@ func main() {
 		http.SetCookie(c.Writer,cookie)
 		c.JSON(http.StatusOK,"LoginSuccessful")
 
+	})
+
+	r3 := r.Group("/v3")
+	r3.GET("/sync", func(c *gin.Context) {
+		time.Sleep(5 * time.Second)
+		fmt.Println(" sync done, ",c.Request.URL.Path)
+	})
+
+	r3.GET("/async", func(c *gin.Context) {
+
+		cc := c.Copy()
+		go func(tc *gin.Context) {
+			time.Sleep(5 * time.Second)
+			fmt.Println("async done.",tc.Request.URL.Path)
+		}(cc)
 	})
 
 	r2.GET("/home",AuthMiddleware(), func(c *gin.Context) {
