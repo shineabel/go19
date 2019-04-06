@@ -37,11 +37,30 @@ func (c *Client) Listen()  {
 				switch msg.command {
 
 					case QUIT:
-						for _, c := range  c.Rooms {
-							c.In <- msg
+						for _, r := range  c.Rooms {
+							r.In <- msg
 						}
 						c.Quit <- true
 					case JOIN:
+						name := msg.receiver
+						var r *Room
+						if _,ok := c.Server.Rooms[name]; !ok {
+
+							r = &Room{
+								Server:c.Server,
+								Name:name,
+								In:make(chan  *Message),
+								Clients: make(map[string]*Client,0),
+								Quit:make(chan bool),
+							}
+							c.Server.Rooms[name] = r
+							go r.Listen()
+
+						}
+
+						c.Rooms[name] = c.Server.Rooms[name]
+						c.Rooms[name].In <- msg
+
 					default:
 
 						c.Rooms[msg.receiver].In <- msg
@@ -69,22 +88,22 @@ func (c *Client) Receive()  {
 		if err != nil || len(line) == 0 {
 
 			if err == io.EOF || len(line) == 0 {
-				log.Printf(" %s remote closed",c.Name)
+				log.Printf(" %s remote closed\n",c.Name)
 				msg = &Message{
 
 					time:time.Now(),
 					command:QUIT,
-					content:fmt.Sprintf("%s lefted",c.Name),
+					content:fmt.Sprintf("%s lefted\n",c.Name),
 					sender:c,
 					receiver:"",
 				}
 			} else {
-				log.Println("%s lefted", c.Conn.RemoteAddr())
+				log.Printf("%s lefted\n", c.Conn.RemoteAddr())
 				msg = &Message{
 
 					time:time.Now(),
 					command:QUIT,
-					content:fmt.Sprintf("%s disconnected",c.Name),
+					content:fmt.Sprintf("%s disconnected\n",c.Name),
 					sender:c,
 					receiver:"",
 				}
