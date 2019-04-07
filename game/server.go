@@ -17,7 +17,7 @@ type Response struct {
 
 type Server interface {
 	Name() string
-	Handler(method, params string) *Response
+	Handle(method, params string) *Response
 }
 
 type IPCServer struct {
@@ -62,10 +62,10 @@ func (s *IPCServer) Connect() chan string  {
 	return session
 }
 
-func (s *IPCServer) Handle(method , params string) *Response  {
-
-	return &Response{
-		Code:"ok",
-		Body:"server:"+ method + "-" + params,
-	}
-}
+//func (s *IPCServer) Handle(method , params string) *Response  {
+//
+//	return &Response{
+//		Code:"ok",
+//		Body:"server:"+ method + "-" + params,
+//	}
+//}

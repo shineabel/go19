@@ -9,7 +9,7 @@ type EchoServer struct {
 
 }
 
-func (s *EchoServer) Handler(method, params string) *Response  {
+func (s *EchoServer) Handle(method, params string) *Response  {
 
 
 	return &Response{
