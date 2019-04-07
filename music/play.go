@@ -25,10 +25,10 @@ func (mp3 *Mp3Player) play(source string)  {
 
 	fmt.Println("start to play mp3...")
 	mp3.progress = 0
-	for mp3.progress < 100{
-		time.Sleep(500 * time.Millisecond)
+	for mp3.progress < 500{
+		time.Sleep(1000 * time.Millisecond)
 		fmt.Println(".")
-		mp3.progress += 10
+		mp3.progress += 5
 	}
 
 	fmt.Printf("play mp3 end....")

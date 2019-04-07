@@ -30,9 +30,9 @@ func main()  {
 
 		fmt.Println("token[0]",tokens[0])
 		if tokens[0] == "mge" {
-			handlerManageCmd(tokens)
+			go handlerManageCmd(tokens)
 		} else if tokens[0] == "play"{
-			handlePlayCmd(tokens)
+			go handlePlayCmd(tokens)
 		} else {
 			fmt.Printf("not support cmd")
 		}
