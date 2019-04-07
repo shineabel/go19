@@ -34,7 +34,7 @@ func (c *IPCClient) Call(method, params string)(resp *Response, err error)  {
 	resp = &resp1
 
 
-	return resp, nil
+	return
 }
 
 func (c *IPCClient) Close()  {
