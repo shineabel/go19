@@ -6,7 +6,7 @@ type GamePlayer struct {
 	Name string
 	Level int
 	Exp int
-	mq chan  *GameMessage `json:"_"`
+	mq chan  *GameMessage
 }
 
 func NewGamePlayer() *GamePlayer  {
