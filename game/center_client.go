@@ -11,8 +11,8 @@ type CenterClient struct {
 }
 
 func (cc *CenterClient) AddPlayer( player *GamePlayer) error {
-	fmt.Println("===============>>>" , player)
-	b , err := json.Marshal(player)
+	fmt.Println("===============>>>" , *player)
+	b , err := json.Marshal(*player)
 	if err != nil {
 		fmt.Println("===", err)
 		return err

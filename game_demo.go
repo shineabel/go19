@@ -46,13 +46,13 @@ help
 
 
 `)
-	return 1
+	return 0
 }
 
 
 
 func quit(args []string) int  {
-	return 1
+	return 0
 }
 
 
@@ -60,6 +60,10 @@ func list(args []string) int  {
 	ps , err := cc.ListPlayer()
 	if err != nil {
 		return 1
+	}
+	if len(ps) == 0 {
+		fmt.Println("no online player...")
+		return 0
 	}
 	for i, v := range ps {
 		fmt.Println("index:", i + 1, " , value:" , v)
@@ -137,8 +141,6 @@ func main() {
 			ret := handler(tokens)
 			if ret != 0 {
 				break
-			} else {
-				fmt.Println("unknow cmd...")
 			}
 		}
 	}

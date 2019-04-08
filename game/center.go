@@ -87,7 +87,7 @@ func (cs *CenterServer) broadcast(msg string) error  {
 	cs.mutex.Lock()
 	defer cs.mutex.Unlock()
 
-	var message GameMessage
+	var message *GameMessage
 	err := json.Unmarshal([]byte(msg), &message)
 	if err != nil {
 		return err
@@ -95,7 +95,7 @@ func (cs *CenterServer) broadcast(msg string) error  {
 
 	if len(cs.players) > 0 {
 		for _, p := range  cs.players {
-			p.Mq <- message
+			p.mq <- message
 		}
 
 	} else {
