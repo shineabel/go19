@@ -102,7 +102,7 @@ func login(args []string) int  {
 
 	err = cc.AddPlayer(player)
 	if err != nil {
-		fmt.Println("failed to add player")
+		fmt.Println("failed to add player", err)
 		return 1
 	}
 	return 0
@@ -115,7 +115,7 @@ func send(args []string) int  {
 
 	err := cc.Broadcast(message)
 	if err != nil {
-		fmt.Println("broadcast error")
+		fmt.Println("broadcast error", err)
 		return 1
 	}
 	return 0

@@ -61,11 +61,3 @@ func (s *IPCServer) Connect() chan string  {
 	fmt.Printf("a new session has been create successfully\n")
 	return session
 }
-
-//func (s *IPCServer) Handle(method , params string) *Response  {
-//
-//	return &Response{
-//		Code:"ok",
-//		Body:"server:"+ method + "-" + params,
-//	}
-//}

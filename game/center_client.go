@@ -3,6 +3,7 @@ package game
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 )
 
 type CenterClient struct {
@@ -10,8 +11,10 @@ type CenterClient struct {
 }
 
 func (cc *CenterClient) AddPlayer( player *GamePlayer) error {
+	fmt.Println("===============>>>" , player)
 	b , err := json.Marshal(player)
 	if err != nil {
+		fmt.Println("===", err)
 		return err
 	}
 	resp, err := cc.Call("add", string(b))
