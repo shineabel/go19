@@ -10,7 +10,7 @@ func main() {
 
 	server := &chat.ChatServer{
 
-		Bind2:":12345",
+		Bind2: ":12345",
 		Rooms: make(map[string]*chat.Room),
 	}
 

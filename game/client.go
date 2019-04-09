@@ -3,24 +3,24 @@ package game
 import "encoding/json"
 
 type IPCClient struct {
-	con chan  string
+	con chan string
 }
 
-func NewIPCClient(s *IPCServer) *IPCClient  {
+func NewIPCClient(s *IPCServer) *IPCClient {
 
 	c := s.Connect()
 	return &IPCClient{
-		con:c,
+		con: c,
 	}
 }
 
-func (c *IPCClient) Call(method, params string)(resp *Response, err error)  {
+func (c *IPCClient) Call(method, params string) (resp *Response, err error) {
 	req := &Request{
-		Method:method,
-		Params:params,
+		Method: method,
+		Params: params,
 	}
 	var b []byte
-	b, err  = json.Marshal(req)
+	b, err = json.Marshal(req)
 	if err != nil {
 		return
 	}
@@ -33,11 +33,10 @@ func (c *IPCClient) Call(method, params string)(resp *Response, err error)  {
 	err = json.Unmarshal([]byte(str), &resp1)
 	resp = &resp1
 
-
 	return
 }
 
-func (c *IPCClient) Close()  {
+func (c *IPCClient) Close() {
 
 	c.con <- "close"
 }

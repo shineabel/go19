@@ -3,7 +3,6 @@ package chat
 import "time"
 
 const (
-
 	_ = iota
 	NORMAL
 	JOIN
@@ -14,9 +13,9 @@ const (
 )
 
 type Message struct {
-	sender *Client
-	time time.Time
+	sender   *Client
+	time     time.Time
 	receiver string
-	command int
-	content interface{}
+	command  int
+	content  interface{}
 }

@@ -12,9 +12,9 @@ func main() {
 			if total <= 50000 {
 				total = total - 1000
 			} else {
-				total = total - 100000 * 0.05
+				total = total - 100000*0.05
 			}
-			count ++
+			count++
 			fmt.Println("current total", total, count)
 		} else {
 			break

@@ -1,25 +1,24 @@
 package game
 
 import (
-	"sync"
 	"encoding/json"
-	"fmt"
 	"errors"
+	"fmt"
+	"sync"
 )
 
 type CenterServer struct {
-	servers map[string] Server
+	servers map[string]Server
 	players []*GamePlayer
-	room []*GameRoom
-	mutex sync.Mutex
-
+	room    []*GameRoom
+	mutex   sync.Mutex
 }
 
-func NewCenterServer() *CenterServer  {
+func NewCenterServer() *CenterServer {
 
 	return &CenterServer{
-		servers:make(map[string] Server),
-		players:make([]*GamePlayer, 0),
+		servers: make(map[string]Server),
+		players: make([]*GamePlayer, 0),
 	}
 }
 
@@ -33,17 +32,16 @@ func (cs *CenterServer) AddPlayer(params string) error {
 
 	cs.mutex.Lock()
 	defer cs.mutex.Unlock()
-	cs.players = append(cs.players,player)
+	cs.players = append(cs.players, player)
 	return nil
 }
 
-func (cs *CenterServer) RemovePlayer(params string) error  {
-
+func (cs *CenterServer) RemovePlayer(params string) error {
 
 	cs.mutex.Lock()
 	defer cs.mutex.Unlock()
 
-	for index , p := range  cs.players {
+	for index, p := range cs.players {
 		if p.Name == params {
 			if len(cs.players) == 1 {
 				cs.players = make([]*GamePlayer, 0)
@@ -52,11 +50,11 @@ func (cs *CenterServer) RemovePlayer(params string) error  {
 
 				if index == len(cs.players)-1 {
 
-					cs.players = cs.players[: index]
+					cs.players = cs.players[:index]
 				} else if index == 0 {
-					cs.players = cs.players[ 1 :]
+					cs.players = cs.players[1:]
 				} else {
-					cs.players = append(cs.players[:index - 1],cs.players[index + 1:]...)
+					cs.players = append(cs.players[:index-1], cs.players[index+1:]...)
 				}
 			}
 		}
@@ -64,13 +62,13 @@ func (cs *CenterServer) RemovePlayer(params string) error  {
 	return errors.New("not found player")
 }
 
-func (cs *CenterServer) ListPlayer() (players string, err error)  {
+func (cs *CenterServer) ListPlayer() (players string, err error) {
 	cs.mutex.Lock()
 
 	defer cs.mutex.Unlock()
 	if len(cs.players) > 0 {
 
-		b , _ := json.Marshal(cs.players)
+		b, _ := json.Marshal(cs.players)
 		players = string(b)
 
 	} else {
@@ -80,9 +78,7 @@ func (cs *CenterServer) ListPlayer() (players string, err error)  {
 	return
 }
 
-func (cs *CenterServer) broadcast(msg string) error  {
-
-
+func (cs *CenterServer) broadcast(msg string) error {
 
 	cs.mutex.Lock()
 	defer cs.mutex.Unlock()
@@ -94,7 +90,7 @@ func (cs *CenterServer) broadcast(msg string) error  {
 	}
 
 	if len(cs.players) > 0 {
-		for _, p := range  cs.players {
+		for _, p := range cs.players {
 			p.mq <- message
 		}
 
@@ -104,7 +100,7 @@ func (cs *CenterServer) broadcast(msg string) error  {
 	return err
 }
 
-func (cs *CenterServer) Handle(method , params string) *Response  {
+func (cs *CenterServer) Handle(method, params string) *Response {
 
 	switch method {
 
@@ -112,56 +108,53 @@ func (cs *CenterServer) Handle(method , params string) *Response  {
 		err := cs.AddPlayer(params)
 		if err != nil {
 			return &Response{
-				Code:err.Error(),
+				Code: err.Error(),
 			}
 		}
 	case "remove":
 		err := cs.RemovePlayer(params)
 		if err != nil {
 			return &Response{
-				Code:err.Error(),
+				Code: err.Error(),
 			}
 		}
 	case "list":
-		players , err := cs.ListPlayer()
+		players, err := cs.ListPlayer()
 		if err != nil {
 			return &Response{
-				Code:err.Error(),
+				Code: err.Error(),
 			}
 		}
 		return &Response{
-			Code:"200",
-			Body:players,
-
+			Code: "200",
+			Body: players,
 		}
 	case "broadcast":
 		err := cs.broadcast(params)
 		if err != nil {
 			return &Response{
-				Code:err.Error(),
+				Code: err.Error(),
 			}
 		}
 		return &Response{
-			Code:"200",
+			Code: "200",
 		}
 
 	default:
 		return &Response{
-			Code:"404",
-			Body:method + "-" + params,
+			Code: "404",
+			Body: method + "-" + params,
 		}
 	}
 	return &Response{
-		Code:"200",
+		Code: "200",
 	}
 }
 
-
-func (cs *CenterServer) Name() string  {
+func (cs *CenterServer) Name() string {
 
 	return "centerserver"
 }
 
 type GameRoom struct {
-
 }

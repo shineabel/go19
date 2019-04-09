@@ -1,19 +1,19 @@
 package main
 
 import (
-	"log"
-	"time"
 	"github.com/go19/work"
+	"log"
 	"sync"
+	"time"
 )
 
-var names  = []string{"shine","codercat","xianming"}
+var names = []string{"shine", "codercat", "xianming"}
 
 type namePrinter struct {
 	name string
 }
 
-func (n *namePrinter) Task()  {
+func (n *namePrinter) Task() {
 	log.Printf(n.name)
 	time.Sleep(5 * time.Second)
 }
@@ -24,12 +24,12 @@ func main() {
 	var wg8 sync.WaitGroup
 	wg8.Add(100 * len(names))
 
-	for i := 0; i < 100; i++{
+	for i := 0; i < 100; i++ {
 
-		for _, n := range names{
+		for _, n := range names {
 
 			np := namePrinter{
-				name:n,
+				name: n,
 			}
 
 			go func() {

@@ -1,39 +1,36 @@
 package chat
 
 import (
-	"time"
 	"fmt"
-	"net"
 	"log"
+	"net"
+	"time"
 )
 
 type ChatServer struct {
-
 	Rooms map[string]*Room
 	Bind2 string
 }
 
-func (s *ChatServer) reportServerStatus()  {
+func (s *ChatServer) reportServerStatus() {
 
 	for {
 		time.Sleep(5 * time.Second)
-		for _,r := range s.Rooms {
-			fmt.Printf(" room name:%s , client count:%d\n",r.Name, len(r.Clients))
+		for _, r := range s.Rooms {
+			fmt.Printf(" room name:%s , client count:%d\n", r.Name, len(r.Clients))
 		}
 	}
 }
 
-func (s *ChatServer)  ListenAndServe()  {
+func (s *ChatServer) ListenAndServe() {
 
-	listener, err := net.Listen("tcp",s.Bind2)
+	listener, err := net.Listen("tcp", s.Bind2)
 	if err != nil {
-		log.Fatal("serve listen error:",err)
+		log.Fatal("serve listen error:", err)
 	}
-
 
 	defer listener.Close()
 	go s.reportServerStatus()
-
 
 	for {
 		conn, err := listener.Accept()
@@ -45,13 +42,13 @@ func (s *ChatServer)  ListenAndServe()  {
 
 			c := &Client{
 
-				Server:s,
-				Name:fmt.Sprintf("%s", conn.RemoteAddr()),
-				Conn:conn,
-				In:make(chan  *Message),
-				Out:make(chan  *Message),
-				Quit:make(chan bool),
-				Rooms: map[string]*Room{},
+				Server: s,
+				Name:   fmt.Sprintf("%s", conn.RemoteAddr()),
+				Conn:   conn,
+				In:     make(chan *Message),
+				Out:    make(chan *Message),
+				Quit:   make(chan bool),
+				Rooms:  map[string]*Room{},
 			}
 
 			go c.Listen()

@@ -1,19 +1,18 @@
 package main
 
 import (
-	"log"
-	"io"
-	"sync/atomic"
-	"sync"
-	"github.com/go19/pool"
 	"fmt"
-	"time"
+	"github.com/go19/pool"
+	"io"
+	"log"
 	"math/rand"
+	"sync"
+	"sync/atomic"
+	"time"
 )
 
 var (
-
-	nRoutine = 25
+	nRoutine       = 25
 	nResource uint = 2
 	idCounter int32
 )
@@ -22,22 +21,20 @@ type dbConnection struct {
 	id int32
 }
 
-func (c *dbConnection) Close() error  {
-	log.Printf("connection close:id %d",c.id)
+func (c *dbConnection) Close() error {
+	log.Printf("connection close:id %d", c.id)
 	return nil
 
 }
 
-func CreateConnection()(io.Closer, error)  {
-
+func CreateConnection() (io.Closer, error) {
 
 	i := atomic.AddInt32(&idCounter, 1)
-	log.Printf("create new connection %d:",i)
+	log.Printf("create new connection %d:", i)
 	return &dbConnection{
-		id:i,
-	},nil
+		id: i,
+	}, nil
 }
-
 
 func main() {
 
@@ -46,12 +43,12 @@ func main() {
 	wg6.Add(nRoutine)
 	p, err := pool.New(CreateConnection, nResource)
 	if err != nil {
-		fmt.Printf("error:",err)
+		fmt.Printf("error:", err)
 	}
 
 	for q := 0; q < nRoutine; q++ {
 		go func(q int) {
-			performQuery(q,p)
+			performQuery(q, p)
 			wg6.Done()
 		}(q)
 	}
@@ -61,17 +58,16 @@ func main() {
 
 }
 
-func performQuery(q int , p *pool.Pool)  {
+func performQuery(q int, p *pool.Pool) {
 
 	conn, err := p.Acquire()
 	if err != nil {
-		fmt.Printf("acquire connection error:",err)
+		fmt.Printf("acquire connection error:", err)
 		return
 	}
 
 	defer p.Release(conn)
 
 	time.Sleep(time.Duration(rand.Int31n(100)) * time.Millisecond)
-	log.Printf("qid %d use  cid %d end ...",q, conn.(*dbConnection).id)
+	log.Printf("qid %d use  cid %d end ...", q, conn.(*dbConnection).id)
 }
-

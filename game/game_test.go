@@ -1,9 +1,9 @@
 package game
 
 import (
-	"testing"
 	"encoding/json"
 	"fmt"
+	"testing"
 )
 
 type T struct {
@@ -21,7 +21,7 @@ func TestCenterClient_AddPlayer(t *testing.T) {
 	//
 	//}
 	t1 := &T{
-		name:"hi",
+		name: "hi",
 		//mq:make(chan  string, 1024),
 
 	}
